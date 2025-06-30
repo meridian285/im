@@ -1,0 +1,42 @@
+import { Component, OnInit } from '@angular/core';
+import {FavoriteService} from "../../../shared/services/favorite.service";
+import {FavoritesType} from "../../../../types/favorites.type";
+import {DefaultResponseType} from "../../../../types/default-response.type";
+import {environment} from "../../../../environments/environment";
+
+@Component({
+  selector: 'favorite',
+  templateUrl: './favorite.component.html',
+  styleUrls: ['./favorite.component.scss']
+})
+export class FavoriteComponent implements OnInit {
+
+  products: FavoritesType[] = [];
+  serverStaticPath = environment.serverStaticPath;
+
+  constructor(private favoriteService: FavoriteService) { }
+
+  ngOnInit(): void {
+    this.favoriteService.getFavorites()
+      .subscribe((data: FavoritesType[] | DefaultResponseType) => {
+      if ((data as DefaultResponseType).error !== undefined) {
+        const error = (data as DefaultResponseType).message;
+        throw new Error(error);
+      }
+
+      this.products = data as FavoritesType[];
+    });
+  }
+
+  removeFromFavorites(id: string) {
+    this.favoriteService.removeFavorite(id)
+      .subscribe((data: DefaultResponseType) => {
+        if (data.error) {
+          // ...
+          throw new Error(data.message);
+        }
+
+        this.products = this.products.filter(item => item.id !== id)
+      })
+  }
+}
