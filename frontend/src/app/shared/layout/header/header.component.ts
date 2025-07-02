@@ -26,7 +26,6 @@ export class HeaderComponent implements OnInit {
   searchField = new FormControl();
   showedSearch: boolean = false;
   products: ProductType[] = [];
-  // searchValue = '';
   count: number = 0;
   isLogged: boolean = false;
 
