@@ -15,7 +15,7 @@ import {ProductType} from "../../../../types/product.type";
 export class FavoriteComponent implements OnInit {
 
   @Input() countInCart: number | undefined = 0;
-  count: number = 0;
+  count: number = 1;
 
   products: FavoritesType[] = [];
   serverStaticPath = environment.serverStaticPath;
