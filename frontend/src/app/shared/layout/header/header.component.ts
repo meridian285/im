@@ -1,7 +1,7 @@
 import {Component, HostListener, Input, OnInit} from '@angular/core';
 import {AuthService} from "../../../core/auth/auth.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {CategoryWithTypeType} from "../../../../types/category-with-type.type";
 import {CartService} from "../../services/cart.service";
 import {DefaultResponseType} from "../../../../types/default-response.type";
@@ -36,7 +36,8 @@ export class HeaderComponent implements OnInit {
               private router: Router,
               private productService: ProductService,
               private loaderService: LoaderService,
-              private cartService: CartService) {
+              private cartService: CartService,
+              private activatedRouter: ActivatedRoute,) {
     this.isLogged = this.authService.getIsLoggedIn();
   }
 
@@ -73,7 +74,6 @@ export class HeaderComponent implements OnInit {
     })
   }
 
-
   logout(): void {
     this.authService.logout()
       .subscribe({
@@ -90,24 +90,13 @@ export class HeaderComponent implements OnInit {
     this.authService.removeTokens();
     this.authService.userId = null;
     this._snackBar.open('Вы вышли из системы');
+    if (this.router.url === '/') {
+      window.location.reload();
+    }
     this.router.navigate(['/']);
   }
 
-  // changedSearchValue(newValue: string) {
-  //   this.searchValue = newValue;
-  //
-  //   if (this.searchValue && this.searchValue.length > 2) {
-  //     this.productService.searchProducts(this.searchValue)
-  //       .subscribe((data: ProductType[]) => {
-  //         this.products = data;
-  //         this.showedSearch = true;
-  //       })
-  //   } else {
-  //     this.products = [];
-  //   }
-  // }
-
-  selectProduct(url: string) {
+   selectProduct(url: string) {
     this.router.navigate(['/product/' + url]);
     this.searchField.setValue('');
     this.products = [];
