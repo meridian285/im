@@ -14,14 +14,10 @@ import {ProductType} from "../../../../types/product.type";
 })
 export class FavoriteComponent implements OnInit {
 
-  @Input() countInCart: number | undefined = 0;
-  count: number = 1;
-
-  products: FavoritesType[] = [];
+  productsFavorite: FavoritesType[] = [];
   serverStaticPath = environment.serverStaticPath;
 
   constructor(private favoriteService: FavoriteService,
-
               private cartService: CartService
   ) {
   }
@@ -34,42 +30,27 @@ export class FavoriteComponent implements OnInit {
           throw new Error(error);
         }
 
-        this.products = data as FavoritesType[];
-      });
-  }
+        const productsFavorite = data as FavoritesType[];
 
-  removeFromFavorites(id: string) {
-    this.favoriteService.removeFavorite(id)
-      .subscribe((data: DefaultResponseType) => {
-        if (data.error) {
-          // ...
-          throw new Error(data.message);
-        }
+        this.cartService.getCart()
+          .subscribe((data: CartType | DefaultResponseType) => {
+            if ((data as DefaultResponseType).error !== undefined) {
+              const error = (data as DefaultResponseType).message;
+              throw new Error(error);
+            }
+            const cart = data as CartType;
 
-        this.products = this.products.filter(item => item.id !== id)
-      })
-  }
-
-  addToCart(productId: string) {
-    this.cartService.updateCart(productId, this.count)
-      .subscribe((data: CartType | DefaultResponseType) => {
-        if ((data as DefaultResponseType).error !== undefined) {
-          throw new Error((data as DefaultResponseType).message);
-        }
-
-        this.countInCart = this.count;
-      });
-  }
-
-  removeFromCart(productId: string) {
-    this.cartService.updateCart(productId, 0)
-      .subscribe((data: CartType | DefaultResponseType) => {
-        if ((data as DefaultResponseType).error !== undefined) {
-          throw new Error((data as DefaultResponseType).message);
-        }
-
-        this.countInCart = 0;
-        this.count = 1;
+            productsFavorite.forEach((favoriteItem, indexFavorite) => {
+              const sameValues = cart.items.find(cartItem=> cartItem.product.id === favoriteItem.id);
+              if (sameValues) {
+                favoriteItem.quantity = sameValues.quantity;
+                favoriteItem.countInCart = 1;
+              } else {
+                favoriteItem.quantity = 1;
+              }
+              this.productsFavorite.push(favoriteItem);
+            })
+          })
       });
   }
 }

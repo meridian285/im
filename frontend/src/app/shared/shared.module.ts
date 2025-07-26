@@ -8,6 +8,7 @@ import {CategoryFilterComponent} from './components/category-filter/category-fil
 import {CountSelectorComponent} from './components/count-selector/count-selector.component';
 import { LoaderComponent } from './components/loader/loader.component';
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import { FavoriteProductComponent } from './components/favorite-product/favorite-product.component';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
     ProductCardComponent,
     CategoryFilterComponent,
     CountSelectorComponent,
-    LoaderComponent
+    LoaderComponent,
+    FavoriteProductComponent
   ],
   imports: [
     CommonModule,
@@ -24,13 +26,14 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
     RouterModule,
     FormsModule,
   ],
-  exports: [
-    PasswordRepeatDirective,
-    ProductCardComponent,
-    CategoryFilterComponent,
-    CountSelectorComponent,
-    LoaderComponent
-  ]
+    exports: [
+        PasswordRepeatDirective,
+        ProductCardComponent,
+        CategoryFilterComponent,
+        CountSelectorComponent,
+        LoaderComponent,
+        FavoriteProductComponent
+    ]
 })
 export class SharedModule {
 }

@@ -50,8 +50,6 @@ export class CatalogComponent implements OnInit {
 
   ngOnInit(): void {
 
-    console.log('activatedRouter.snapshot.url - ', this.activatedRouter.snapshot.url)
-
     this.cartService.getCart().subscribe((data: CartType | DefaultResponseType) => {
       if ((data as DefaultResponseType).error !== undefined) {
         throw new Error((data as DefaultResponseType).message);
