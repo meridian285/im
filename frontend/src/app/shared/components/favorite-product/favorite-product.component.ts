@@ -13,10 +13,10 @@ import {environment} from "../../../../environments/environment";
 })
 export class FavoriteProductComponent implements OnInit {
 
-  @Input()productFavorite!: FavoritesType;
+  @Input() productFavorite!: FavoritesType;
   @Input() countInCart: number | undefined = 0;
   count: number = 1;
-  products: FavoritesType[] = [];
+  productsFavorite: FavoritesType[] = [];
   serverStaticPath = environment.serverStaticPath;
 
   constructor(private favoriteService: FavoriteService,
@@ -32,7 +32,8 @@ export class FavoriteProductComponent implements OnInit {
         if ((data as DefaultResponseType).error !== undefined) {
           throw new Error((data as DefaultResponseType).message);
         }
-        this.products = data as FavoritesType[];
+        this.productsFavorite = data as FavoritesType[];
+        console.log(this.productsFavorite)
 
         this.favoriteService.removeFavorite(id)
           .subscribe((data: DefaultResponseType) => {
@@ -41,8 +42,8 @@ export class FavoriteProductComponent implements OnInit {
               throw new Error(data.message);
             }
 
-            this.products = this.products.filter(item => item.id !== id)
-
+            this.productsFavorite = this.productsFavorite.filter(item => item.id !== id);
+            console.log(this.productsFavorite)
           })
       })
   }
@@ -56,18 +57,6 @@ export class FavoriteProductComponent implements OnInit {
         }
 
         this.countInCart = this.count;
-      });
-  }
-
-  removeFromCart(productId: string) {
-    this.cartService.updateCart(productId, 0)
-      .subscribe((data: CartType | DefaultResponseType) => {
-        if ((data as DefaultResponseType).error !== undefined) {
-          throw new Error((data as DefaultResponseType).message);
-        }
-
-        this.countInCart = 0;
-        this.count = 1;
       });
   }
 

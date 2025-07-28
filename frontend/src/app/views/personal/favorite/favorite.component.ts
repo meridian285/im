@@ -40,7 +40,7 @@ export class FavoriteComponent implements OnInit {
             }
             const cart = data as CartType;
 
-            productsFavorite.forEach((favoriteItem, indexFavorite) => {
+            productsFavorite.forEach((favoriteItem) => {
               const sameValues = cart.items.find(cartItem=> cartItem.product.id === favoriteItem.id);
               if (sameValues) {
                 favoriteItem.quantity = sameValues.quantity;
