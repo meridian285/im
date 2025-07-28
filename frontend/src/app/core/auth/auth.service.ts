@@ -9,15 +9,24 @@ import {environment} from "../../../environments/environment";
   providedIn: 'root'
 })
 export class AuthService {
-  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
-  public isAuthenticated$: Observable<boolean> = this.isAuthenticatedSubject.asObservable();
+  // private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+  // public isAuthenticated$: Observable<boolean> = this.isAuthenticatedSubject.asObservable();
 
   public accessTokenKey: string = 'accessToken';
   public refreshTokenKey: string = 'refreshToken';
   public userIdKey: string = 'userId';
 
-  public isLogged$: Subject<boolean> = new Subject<boolean>();
-  private isLogged: boolean = false;
+  private _isLogged$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public get isLogged$(): Observable<boolean> {
+    return this._isLogged$.asObservable();
+  }
+  // public get isLogged(): boolean {
+  //   return this._isLogged$.getValue();
+  // }
+
+  public set isLogged(value: boolean) {
+    this._isLogged$.next(value);
+  }
 
   constructor(private http: HttpClient) {
     this.isLogged = !!localStorage.getItem(this.accessTokenKey);
@@ -57,23 +66,22 @@ export class AuthService {
   }
 
   public getIsLoggedIn() {
-    return this.isLogged
+    return this._isLogged$.getValue();
   }
 
   public setTokens(accessToken: string, refreshToken: string): void {
     localStorage.setItem(this.accessTokenKey, accessToken);
     localStorage.setItem(this.refreshTokenKey, refreshToken);
     this.isLogged = true;
-    this.isLogged$.next(true);
   }
+
   public removeTokens(): void {
     localStorage.removeItem(this.accessTokenKey);
     localStorage.removeItem(this.refreshTokenKey);
     this.isLogged = false;
-    this.isLogged$.next(false);
   }
 
-  public getTokens():{accessToken: string | null, refreshToken: string | null} {
+  public getTokens(): { accessToken: string | null, refreshToken: string | null } {
     return {
       accessToken: localStorage.getItem(this.accessTokenKey),
       refreshToken: localStorage.getItem(this.refreshTokenKey)

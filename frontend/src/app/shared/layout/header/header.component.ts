@@ -90,9 +90,6 @@ export class HeaderComponent implements OnInit {
     this.authService.removeTokens();
     this.authService.userId = null;
     this._snackBar.open('Вы вышли из системы');
-    if (this.router.url === '/') {
-      window.location.reload();
-    }
     this.router.navigate(['/']);
   }
 
