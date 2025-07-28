@@ -13,7 +13,7 @@ import {environment} from "../../../../environments/environment";
 })
 export class FavoriteProductComponent implements OnInit {
 
-  @Input() productFavorite!: FavoritesType;
+  @Input()productFavorite!: FavoritesType;
   @Input() countInCart: number | undefined = 0;
   count: number = 1;
   productsFavorite: FavoritesType[] = [];
@@ -57,6 +57,18 @@ export class FavoriteProductComponent implements OnInit {
         }
 
         this.countInCart = this.count;
+      });
+  }
+
+  removeFromCart(productId: string) {
+    this.cartService.updateCart(productId, 0)
+      .subscribe((data: CartType | DefaultResponseType) => {
+        if ((data as DefaultResponseType).error !== undefined) {
+          throw new Error((data as DefaultResponseType).message);
+        }
+
+        this.countInCart = 0;
+        this.count = 1;
       });
   }
 
