@@ -9,6 +9,7 @@ import {AuthService} from "../../../core/auth/auth.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {FavoriteService} from "../../services/favorite.service";
 import {Router} from "@angular/router";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'product-card',
@@ -22,6 +23,8 @@ export class ProductCardComponent implements OnInit {
   count: number = 1;
   @Input() isLight: boolean = false;
   @Input() countInCart: number | undefined = 0;
+  // isLogged: boolean = false;
+  public isLoggedIn$!: Observable<boolean>
 
   constructor(private cartService: CartService,
               private authService: AuthService,
@@ -32,6 +35,12 @@ export class ProductCardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // if (this.authService.getIsLoggedIn()) {
+    //   this.isLogged = true
+    // }
+
+    this.isLoggedIn$ = this.authService.isLogged$;
+
     if (this.countInCart && this.countInCart > 1) {
       this.count = this.countInCart;
     }

@@ -2,6 +2,13 @@ import {Component, OnInit} from '@angular/core';
 import {ProductService} from "../../shared/services/product.service";
 import {ProductType} from "../../../types/product.type";
 import {OwlOptions} from "ngx-owl-carousel-o";
+import {FavoritesType} from "../../../types/favorites.type";
+import {DefaultResponseType} from "../../../types/default-response.type";
+import {AuthService} from "../../core/auth/auth.service";
+import {FavoriteService} from "../../shared/services/favorite.service";
+import {debounceTime} from "rxjs";
+import {ActiveParamsUtil} from "../../shared/utils/active-params.util";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-main',
@@ -10,7 +17,8 @@ import {OwlOptions} from "ngx-owl-carousel-o";
 })
 export class MainComponent implements OnInit {
 
-  products: ProductType[] = []
+  products: ProductType[] = [];
+  favoriteProducts: FavoritesType[] | null = null;
 
   customOptions: OwlOptions = {
     loop: true,
@@ -98,14 +106,56 @@ export class MainComponent implements OnInit {
     }
   ]
 
-  constructor(private productService: ProductService) {
+  constructor(private productService: ProductService,
+              private authService: AuthService,
+              private favoriteService: FavoriteService,
+              private activatedRouter: ActivatedRoute,) {
   }
 
   ngOnInit(): void {
+    // console.log('activatedRouter.snapshot.url - ', this.activatedRouter.snapshot.url)
+    // this.productService.getBestProducts()
+    //   .subscribe((data: ProductType[]) => {
+    //     this.products = data;
+    //   })
+
+    if (this.authService.getIsLoggedIn()) {
+      this.favoriteService.getFavorites()
+        .subscribe(
+          {
+            next: (data: FavoritesType[] | DefaultResponseType) => {
+              if ((data as DefaultResponseType).error !== undefined) {
+                const error = (data as DefaultResponseType).message;
+                this.processCatalog();
+                throw new Error(error);
+              }
+
+              this.favoriteProducts = data as FavoritesType[];
+              this.processCatalog();
+            },
+            error: (error) => {
+              this.processCatalog();
+            }
+          });
+    } else {
+      this.processCatalog();
+    }
+  }
+
+  processCatalog() {
     this.productService.getBestProducts()
       .subscribe((data: ProductType[]) => {
         this.products = data;
-      })
-  }
 
+        if (this.favoriteProducts) {
+          this.products = this.products.map((product: ProductType) => {
+            const productInFavorite = this.favoriteProducts?.find(item => item.id === product.id);
+            if (productInFavorite) {
+              product.isInFavorite = true;
+            }
+            return product;
+          })
+        }
+      });
+  }
 }
