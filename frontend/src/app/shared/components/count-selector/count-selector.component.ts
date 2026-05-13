@@ -14,6 +14,7 @@ export class CountSelectorComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.count)
   }
 
   countChange() {

@@ -3,7 +3,7 @@ import {ProductService} from "../../../shared/services/product.service";
 import {HttpClient} from "@angular/common/http";
 import {ProductType} from "../../../../types/product.type";
 import {CategoryService} from "../../../shared/services/category.service";
-import {debounceTime, subscribeOn} from "rxjs";
+import {debounceTime} from "rxjs";
 import {CategoryWithTypeType} from "../../../../types/category-with-type.type";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ActiveParamsType} from "../../../../types/active-params.type";
@@ -55,6 +55,8 @@ export class CatalogComponent implements OnInit {
       }
 
       this.cart = data as CartType;
+
+      console.log('this.cart', this.cart)
 
       if (this.authService.getIsLoggedIn()) {
         this.favoriteService.getFavorites()
