@@ -35,7 +35,6 @@ export class FavoriteProductComponent implements OnInit {
     }
   }
 
-
   removeFromFavorites() {
     this.removeProduct.emit(this.product.id)
   }
