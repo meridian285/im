@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, HostListener, OnInit} from '@angular/core';
 import {ProductService} from "../../../shared/services/product.service";
 import {HttpClient} from "@angular/common/http";
 import {ProductType} from "../../../../types/product.type";
@@ -45,7 +45,18 @@ export class CatalogComponent implements OnInit {
               private cartService: CartService,
               private favoriteService: FavoriteService,
               private authService: AuthService,
-              private router: Router) {
+              private router: Router,
+              private elementRef: ElementRef) {
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClick(event: MouseEvent) {
+    const clickedInside = this.elementRef.nativeElement.contains(event.target);
+    if (clickedInside && this.sortingOpen) {
+      this.sortingOpen = false;
+    }
+
+    console.log('clickedInside', clickedInside)
   }
 
   ngOnInit(): void {
@@ -183,8 +194,9 @@ export class CatalogComponent implements OnInit {
     });
   }
 
-  toggleSorting() {
+  toggleSorting(event: MouseEvent) {
     this.sortingOpen = !this.sortingOpen;
+    event.stopPropagation();
   }
 
   sort(value: string) {
