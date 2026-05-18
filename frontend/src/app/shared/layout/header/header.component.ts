@@ -26,7 +26,6 @@ export class HeaderComponent implements OnInit {
   searchField = new FormControl();
   showedSearch: boolean = false;
   products: ProductType[] = [];
-  // searchValue = '';
   count: number = 0;
   isLogged: boolean = false;
 
@@ -85,7 +84,6 @@ export class HeaderComponent implements OnInit {
     })
   }
 
-
   logout(): void {
     this.authService.logout()
       .subscribe({
@@ -105,31 +103,11 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  // changedSearchValue(newValue: string) {
-  //   this.searchValue = newValue;
-  //
-  //   if (this.searchValue && this.searchValue.length > 2) {
-  //     this.productService.searchProducts(this.searchValue)
-  //       .subscribe((data: ProductType[]) => {
-  //         this.products = data;
-  //         this.showedSearch = true;
-  //       })
-  //   } else {
-  //     this.products = [];
-  //   }
-  // }
-
   selectProduct(url: string) {
     this.router.navigate(['/product/' + url]);
     this.searchField.setValue('');
     this.products = [];
   }
-
-  // changedShowSearched(value: boolean) {
-  //   setTimeout(() => {
-  //     this.showedSearch = value;
-  //   },1000);
-  // }
 
   @HostListener('document:click', ['$event'])
   click(event: Event) {
