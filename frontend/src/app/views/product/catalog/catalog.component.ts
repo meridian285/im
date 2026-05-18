@@ -55,8 +55,6 @@ export class CatalogComponent implements OnInit {
     if (clickedInside && this.sortingOpen) {
       this.sortingOpen = false;
     }
-
-    console.log('clickedInside', clickedInside)
   }
 
   ngOnInit(): void {
@@ -66,8 +64,6 @@ export class CatalogComponent implements OnInit {
       }
 
       this.cart = data as CartType;
-
-      console.log('this.cart', this.cart)
 
       if (this.authService.getIsLoggedIn()) {
         this.favoriteService.getFavorites()
